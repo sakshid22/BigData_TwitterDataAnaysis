@@ -1,0 +1,106 @@
+record = LOAD '/home/training/Desktop/Final Project/dataset.txt' using PigStorage(',') AS (name:chararray,landmass:int,zone:int,area:int,population:int,language:int,religion:int,bars:int,stripes:int,colours:int,red:int,green:int,
+blue:int,gold:int,white:int,black:int,orange:int,mainhue:chararray,circles:int,crosses:int,saltires:int,quarters:int,sunstars:int,crescent:int,
+traingle:int,icon:int,animate:int,text:int,topLeft:chararray,botright:chararray);
+
+A)Count number of countries based on landmass. DONE
+
+land = foreach record generate $1;
+grouping = group land by landmass; 
+count = foreach grouping generate group, COUNT(land);
+dump count;
+
+
+B)Find out top 5 country with Sum of bars and strips in a flag. DONE
+ alot = order record by bars desc,stripes desc; 
+
+
+ counter = foreach alot {
+  sum1= SUM(record.bars+records.stripes);
+  generate sum1;
+};
+//This one is correct
+ summs =foreach record generate name,(bars+stripes) as total;
+ top = order summs by total desc; 
+ new = limit top 2;
+
+C)Count of countries with icon. DONE
+ 
+ show = filter record by (icon==1);
+ groupShow = group show by name;
+ ans = foreach groupShow generate group, COUNT(show);
+
+ a= group ans all;
+ b = foreach a generate group,COUNT(ans);
+
+D)Count of countries which have same top left and top right color in flag. DONE
+
+ same = filter record by (topLeft==botright);
+ get = foreach same generate $0;
+ collect = group get by name;
+ counts = foreach collect generate group,COUNT(get);
+ a = group counts all;
+ b = foreach a generate group, COUNT(counts);
+
+ alternate solution:-
+ same = filter record by (topLeft==botright);
+ get = group same by name;
+ ans = foreach get generate group,COUNT(same.name);
+ reach = group ans by group.chararray; ||||||||||ERROR PART||||||||
+ dump reach;
+
+
+E)Count no of countries based on zone;  DONE (Curious)
+ 
+ value = group record by zone;
+ ans = foreach value generate group,COUNT(record.name); ||||COUNT WORKS but max doesnt||||
+
+
+// Curious how to calcuate number of countries from ans ??
+ a = group ans all;
+ b = foreach a generate group,COUNT(ans);
+
+
+F) Find out largest county in terms of area in NE zone.  DONE
+
+alot = order record by area desc; 
+new = filter alot by (zone ==1);
+top = LIMIT new 2;  
+dump top;
+
+//This code aint working
+new = group record by zone;
+alot = filter new by MAX(record.area);
+
+
+G)Find out least populated country in S.America landmass. DONE
+alot = order record by population;
+new = filter alot by (landmass==2);
+top = limit new 1;
+dump top;
+
+H) Find out largest speaking language among all countries. DONE
+
+ a = group record by language;
+ ans = foreach a generate group,COUNT(record.name) AS totals;
+ b = order ans by totals desc;
+ c = limit b by 2;
+
+
+I)Find most common colour among flags from all countries.
+
+
+J) Sum of all circles present in all country flags.  DONE
+
+  a = filter record by (circles != 0);
+  b = group a by name;
+  c = foreach b generate group, COUNT(a);
+  d = group c all;
+  e = foreach d generate group,COUNT(c);
+
+K)Count of countries which have both icon and text in flag. DONE
+ 
+ a= filter record by (icon==1 and text==1);
+ b = group a by name;
+ c = foreach b generate group, COUNT(a);
+ d = group c all;
+ e = foreach d generate group,COUNT(c);

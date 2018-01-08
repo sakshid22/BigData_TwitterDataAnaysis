@@ -1,0 +1,42 @@
+create table flags (name STRING,landmass INT,zone INT,area INT,population INT,language INT,religion INT,bars INT,stripes INT,colours INT,red INT,green INT,blue INT,gold INT,white INT,black INT,orange INT,mainhue STRING,circles INT,crosses INT,saltires INT,quarters INT,sunstars INT,crescent INT,traingle INT,icon INT,animate INT,text INT,topLeft STRING,botright STRING)
+ ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+load data local inpath '/home/training/Desktop/dataset.txt' overwrite into table flags;
+
+A)COUNT NUMBER OF COUNTRIES BASED ON LANDMASS
+
+ select landmass,COUNT(name) from flags group by landmass;
+
+B)TOP FIVE COUNTRIES WITH SUMS OF BARS AND STRIPES IN A FLAG
+  
+  select name,(bars + stripes) as total from flags 
+  order by total desc
+  limit 5;
+
+C)Count of countries with icon.
+  
+  select COUNT(name) from flags where icon = 1;
+
+D)Count of countries which have same top left and top right color in flag.
+  
+  select count(name) from flags where (topLeft = botright);
+
+E)Count no of countries based on zone;  
+ 
+  select zone,COUNT(name) from flags group by zone;
+
+F)Find out largest county in terms of area in NE zone.  
+
+ select flags.name from flags join (select MAX(area) as max from flags)B where flags.area=B.max;
+ 
+G)Find out least populated country in S.America landmass. 
+ select flags.name from flags join (select MIN(population) as min from flags where zone =2)B where population=B.min;
+
+I)Sum of all circles present in all country flags. 
+ 
+  select COUNT(circles) from flags where circles>0;
+
+J)Count of countries which have both icon and text in flag.
+  select COUNT(name) from flags where (icon=1 and text =1);
+  
+ 

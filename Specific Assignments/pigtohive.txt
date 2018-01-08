@@ -1,0 +1,48 @@
+
+create table customer (custid STRING, firstName STRING, lastName STRING , age INT , profession String) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/training/Desktop/custmrdata/custs' overwrite into table customer;
+
+create table customer10 (custid STRING, firstName STRING, lastName STRING , age INT , profession String) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+insert overwrite table customer10 select * from customer limit 100;   
+create table customerbyprofession (custid STRING, firstName STRING, lastName STRING , age INT , profession String) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+insert overwrite table customerbyprofession select profession , COUNT(*) from customer100 group by profession;
+
+
+create table custbyprofession (profession STRING, count INT)  ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+insert overwrite table  custbyprofession select profession , COUNT(*) from customer10 group by profession;
+
+create table txn (txnid STRING, dte STRING , custid STRING, amt DOUBLE , category STRING , city STRING , state STRING , type STRING)  ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+load data local inpath '/home/training/Desktop/custmrdata/txns' overwrite into table txn;
+
+create table txnamt (custid STRING, totalamt DOUBLE) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+insert overwrite table txnamt select custid , SUM(txn.amt) from txn group by custid; 
+
+
+
+
+create table txnamt1 (custid STRING, totalamt DOUBLE) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+insert overwrite table txnamt1 select * from txnamt order by totalamt desc;
+
+create table txnamt100 (custid STRING, totalamt DOUBLE) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+
+insert overwrite table txnamt100 select * from txnamt1 limit 100;
+
+
+
+create table customer100 (custid STRING, firstName STRING, lastName STRING , age INT , profession String,txnamt100) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+insert overwrite customer 100 select * from customer10 join txnamt100 on customer10.custid= txnamt100.customer10 limit 100;
+select * from customer100;

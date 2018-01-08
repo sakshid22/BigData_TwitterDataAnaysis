@@ -1,0 +1,20 @@
+create table movie (mid BIGINT, manme STRING, myear BIGINT, mrate FLOAT, mtime BIGINT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+load data local inpath '/home/training/Desktop/movie.txt' overwrite into table movie; 
+
+A)                                                                  
+select COUNT(myear) from movie where myear>1950 and myear<1960;   
+
+B) select COUNT(mrate) from movie where mrate>4;
+                                                                 
+C)  select manme from movie where mrate>3 and mrate<4;
+                                                                
+D)select COUNT(mtime) from movie where mtime>7200;
+                                                                  
+E)select COUNT(manme) from movie group by myear;
+
+F)select COUNT(mid) from movie ;
+
+
+
+

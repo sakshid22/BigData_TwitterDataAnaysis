@@ -1,0 +1,36 @@
+movie = load '/home/training/Desktop/Final Project/movies/movies dataset for pig (1).txt' using PigStorage(',') AS (id:long, name:chararray,release:int,rating:float,duration:int);
+
+A)Find the number of movies released between 1950 and 1960.
+ a = filter movie by (release >= 1950 AND release <=1960); 
+ b = group a all;
+ c = foreach b generate group, COUNT(a.id);
+
+B)Find the number of movies having rating more than 4.
+ a = filter movie by (rating>4);
+ b = group a all;
+ c = foreach b generate group, COUNT(a.id);
+
+C)Find the movies whose rating are between 3 and 4. 
+ a = filter movie by (rating >3 AND rating <4);
+ b = group a all;
+ c = foreach b generate group,COUNT(a.id); 
+
+D)Find the number of movies with duration more than 2 hours (7200 second). 
+ a = filter movie by (duration>7200);
+ b = group a all;
+ c = foreach b generate group ,COUNT(a.id);
+
+E)Find the list of years and number of movies released each year. 
+ a = group movie by release;
+ b = foreach a generate group ,COUNT(movie.name)
+
+F)Find the total number of movies in the dataset. 
+////////////////ERROR\\\\\\\\\\\\\\\\\\\\\\\
+ a = group movie by id;
+ b = foreach a generate group, COUNT(movie.id) AS tupple;
+ c = foreach b generate group, COUNT(tupple);
+
+////////////////CORRECT\\\\\\\\\\\\\\\\\\
+ a = foreach movie generate id;
+ b = group a all;
+ c = foreach b generate group,COUNT(a.id);

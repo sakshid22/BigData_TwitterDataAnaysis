@@ -1,0 +1,68 @@
+
+TEACHER DATA in pig
+
+ans.1  
+
+teach = LOAD '/home/training/Desktop/teachers/teachers.txt' using PigStorage(',') as (user:chararray, country:chararray , gender:chararray , l1:long , l2:long , l3:long , l4:long , l5:long , l6:long , l7:long , l8:long , l9:long , l10:long);
+
+get = filter teach by (gender == 'Total');
+
+dump get;
+
+ans.2 
+
+teach = LOAD '/home/training/Desktop/teachers/teachers.txt' using PigStorage(',') as (user:chararray, country:chararray , gender:chararray , l1:long , l2:long , l3:long , l4:long , l5:long , l6:long , l7:long , l8:long , l9:long , l10:long);
+
+ get = filter teach by (user == 'Senior Secondary School' or user =='Lower Secondary School'); 
+
+result = group get by (user, country, gender, l8, l10);                                       
+
+dump result;
+
+teacher data in hive
+
+ans1 
+create database school;
+
+create table info (user STRING, country STRING, gender STRING, L1 INT, L2 INT, L3 INT,L4 INT, L5 INT, L6 INT, L7 INT, L8 INT, L9 INT, L10 INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+load data local inpath '/home/training/Desktop/teachers.txt' into table info; 
+
+select * from info where gender = 'Total';
+
+ ans 2
+
+ select * from info where user = 'Senior Secondary School' or user= 'Lower Secondary School';
+
+select * from info group by user, country,gender,L8,L10;
+
+
+STUDENT DATA in pig
+students = LOAD '/home/training/Desktop/student' AS (name:chararray, roll:int);
+
+result = LOAD '/home/training/Desktop/results' AS (roll:int, fp:chararray); 
+
+userInfo = join students by roll, result  by roll;
+
+done = filter userInfo by (fp == 'pass');  
+
+final = foreach done generate $0;
+
+dump final;
+
+
+
+afgandata
+
+
+
+
+ army = LOAD '/home/training/Desktop/afghan.csv 'USING PigStorage(',') AS(type:chararray, category:chararray, region:chararray,  attackon:chararray);
+
+am = filter army by (type == 'Explosive Hazard'); 
+
+
+a = filter am by (category matches '.*IED.*');
+
+dump a;
+ 
